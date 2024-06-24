@@ -1,0 +1,19 @@
+-- Items by Price --
+SELECT item_name, price
+FROM superstore
+ORDER BY price ASC;
+
+-- Average price by item category --
+SELECT category, AVG(price)
+FROM superstore
+GROUP BY category;
+
+-- Minimum & maximum price for kitchen supplies --
+SELECT category, MIN(price), MAX (price)
+FROM superstore
+WHERE category = "Kitchen Supplies";
+
+-- How many TVs do we have in stock --
+SELECT item_name, COUNT (stock_quantity)
+FROM superstore
+WHERE item_name = "Smart LED TV";
