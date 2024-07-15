@@ -1,0 +1,75 @@
+-- This project queries multiple tables within a database to quantify statistics about customer and order data. --
+
+SELECT *
+FROM BIT_DB.customers
+ORDER BY order_id ASC;
+
+SELECT *
+FROM BIT_DB.JanSales;
+
+--This query returns the total number of orders that were placed in January --
+
+SELECT COUNT (OrderID)
+FROM BIT_DB.JanSales
+WHERE LENGTH (OrderID) = 6
+AND OrderID IS NOT NULL;
+
+--This query returns the total number of orders placed in January where an Iphone was one of the items sold --
+
+SELECT COUNT (OrderID)
+FROM BIT_DB.JanSales
+WHERE LENGTH (OrderID) = 6
+AND OrderID IS NOT NULL
+AND product = "iPhone";
+
+-- This query returns a list of each unique customer account number for customers who placed orders in January -- 
+
+SELECT DISTINCT (acctnum)
+FROM BIT_DB.customers
+JOIN BIT_DB.FebSales
+ ON customers.order_id = FebSales.orderID
+WHERE LENGTH (OrderID) = 6
+AND OrderID IS NOT NULL;
+
+--These queries return the cheapest product sold in the month of January and the price of the product --
+
+SELECT Product, price
+FROM BIT_DB.JanSales
+WHERE Length (orderID) = 6
+AND orderID IS NOT NULL
+ORDER BY price ASC
+LIMIT 1;
+
+or;
+
+SELECT Product, MIN (price)
+FROM BIT_DB.JanSales
+WHERE Length (orderID) = 6
+AND orderID IS NOT NULL
+LIMIT 1;
+ 
+--This query returns a list of the total revenue generated for each product sold in the month of January --
+
+SELECT Product, SUM (quantity) * price AS "Revenue"
+FROM BIT_DB.JanSales
+WHERE Length (orderID) = 6
+AND orderID IS NOT NULL
+GROUP BY 1
+ORDER BY 2 ASC;
+
+--This query returns a list of which products were sold in February to a specific location (548 Lincoln St, Seattle, WA 98101), how many of each were sold, and what was the total revenue generated for each product. --
+
+SELECT product, quantity, SUM (quantity)*price AS Revenue
+FROM BIT_DB.FebSales
+WHERE location = "548 Lincoln St, Seattle, WA 98101"
+GROUP BY 1
+ORDER BY 3 ASC;
+
+--This query returns the total unique number of customers who ordered more than 2 products at once during the month of February. It also aggregates the average amount of money spent between all of the unique customers. --
+
+SELECT COUNT (DISTINCT customers.acctnum), ROUND (AVG(quantity*Price), 2) AS "AVG_Spent"
+FROM BIT_DB.customers
+JOIN BIT_DB.FebSales
+ ON customers.order_id = FebSales.orderID
+WHERE LENGTH (orderID) = 6
+AND quantity > 2;
