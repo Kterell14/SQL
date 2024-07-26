@@ -6,6 +6,7 @@ ORDER BY order_id ASC;
 
 SELECT *
 FROM BIT_DB.JanSales;
+ 
 
 --This query returns the total number of orders that were placed in January --
 
@@ -56,6 +57,16 @@ WHERE Length (orderID) = 6
 AND orderID IS NOT NULL
 GROUP BY 1
 ORDER BY 2 ASC;
+
+--This query returns a list of the names and quantities of each product that was sold in the City of Los Angeles in the month of February --
+
+SELECT product, SUM (quantity)
+FROM BIT_DB.FebSales
+WHERE orderdate LIKE '02/%'
+AND location LIKE '%Los Angeles%'
+GROUP BY 1
+ORDER BY 2 DESC;
+
 
 --This query returns a list of which products were sold in February to a specific location (548 Lincoln St, Seattle, WA 98101), how many of each were sold, and what was the total revenue generated for each product. --
 
