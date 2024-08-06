@@ -1,7 +1,7 @@
 SELECT *
 FROM fortune_companies;
 
--- Query 1 uses an if/then statement to categorize each company by the number of PTO days it provides --
+-- Group each company into a category based on the number of PTO days it provides. --
 
 SELECT company_name, paid_time_off_days,
 CASE WHEN paid_time_off_days >= 20 THEN "Excellent"
@@ -12,7 +12,7 @@ END AS pto_days
 FROM fortune_companies
 ORDER BY paid_time_off_days DESC;
 
--- Query 2 returns the number of companies that offer healthcare benfits and at least 20 days of PTO --
+-- What companies offer healthcare benefits AND at least 20 days of PTO? --
 
 SELECT company_name, industry, paid_time_off_days, healthcare_benefits
 FROM fortune_companies
@@ -20,14 +20,14 @@ WHERE healthcare_benefits = 1
 AND paid_time_off_days >= 20
 ORDER BY paid_time_off_days DESC;
 
--- Query 3 returns the average number of weeks that are given for maternity leave and groups the results by industry --
+-- Which industry provides the highest average number of weeks for maternity leave? --
 
 SELECT industry, AVG (maternity_leave_weeks) AS avg_number_of_maternity_leave_weeks
 FROM fortune_companies
 GROUP BY industry
 ORDER BY avg_number_of_maternity_leave_weeks DESC;
 
--- Query 4 returns each of the companies in the technology industry that provide at least 20 days of PTO with an average employee tenure of at least 5 years --
+-- Which companies in the technology industry provide at least 20 days of PTO and an average employee tenure of at least 5 years? --
 
 SELECT company_name, industry, avg_employee_tenure
 FROM fortune_companies
