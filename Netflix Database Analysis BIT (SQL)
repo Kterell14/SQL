@@ -70,29 +70,29 @@ LEFT JOIN "netflix_titles_info"
  ON netflix_people.show_id = netflix_titles_info.show_id
 ORDER BY director ASC;
  
- -- This query is to determine how many movie titles are currently located in the database --
+ -- How many movie titles are there in the database? --
  SELECT COUNT (*)
  FROM "netflix_titles_info"
  WHERE type = 'Movie';
  
- -- This query is to determine when the most recent batch of movies and TV shows were added to this database --
+ -- When was the most recent batch of TV shows and/or movies added to the database? --
 SELECT title, type, date_added
 FROM "netflix_titles_info"
 ORDER BY 2, 3 DESC;
 
---This Query is to organize all of the movies and TV shows in the current database in Ascending alphabetical order --
+-- List all the movies and TV shows in alphabetical order --
 SELECT title, type
 FROM "netflix_titles_info"
 ORDER BY 1;
 
--- This query is to determine the director for the movie The Starling -- 
+-- Who was the Director for the movie The Starling? -- 
 SELECT netflix_people.director, netflix_titles_info.title 
 FROM "netflix_people"
 LEFT JOIN "netflix_titles_info"
  ON netflix_people.show_id = netflix_titles_info.show_id
 WHERE netflix_titles_info.title = 'The Starling';
 
---This query is to determine the oldest movie in the database --
+-- What is the oldest movie in the database and what year was it made? --
 SELECT title, type, release_year
 FROM "netflix_titles_info"
 WHERE type = 'Movie'
