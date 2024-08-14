@@ -1,0 +1,43 @@
+SELECT *
+FROM Spotifydata;
+
+-- Create custom labels to categorize and group artists by their average popularity score using a Common Table Expression (CTE) --
+
+WITH TempMusic AS (
+SELECT artist_name, SUM (popularity) / COUNT (artist_name) AS 'Avg_Popularity'
+FROM Spotifydata
+GROUP BY artist_name
+)
+
+SELECT artist_name,
+ CASE WHEN Avg_Popularity >= 90 THEN 'Top Star'
+ WHEN Avg_Popularity >= 80 THEN 'B-List'
+ WHEN Avg_Popularity >= 70 THEN 'Average'
+ ELSE 'One Hit Wonder'
+END AS 'StarPower'
+FROM TempMusic
+ORDER BY Avg_Popularity DESC;
+
+
+-- Which artist has the most songs in the top 50 --
+
+SELECT artist_name, COUNT (track_name) AS 'Songs in the top 50'
+FROM Spotifydata
+GROUP BY 1
+ORDER BY 2 DESC;
+
+-- Which 5 artists have the highest total popularity score? --
+
+SELECT artist_name, SUM (popularity) AS 'Total Popularity'
+FROM Spotifydata
+GROUP BY artist_name
+ORDER BY 2 DESC
+LIMIT 5;
+
+-- Which 5 artists have the greatest average popularity score? --
+
+SELECT artist_name, SUM (popularity) / COUNT (artist_name) AS 'Avg_Popularity'
+FROM Spotifydata
+GROUP BY artist_name
+ORDER BY 2 DESC
+LIMIT 5;
