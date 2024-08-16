@@ -1,0 +1,65 @@
+SELECT *
+FROM CityBikeLanes;
+
+-- Calculate the average safety rating for each of the bike lanes in the city, provide a list of each bike lane that has an average safety rating of 4.0 or higher, and designate a "Safe Lane". label for the lanes with at least a 4.0 average safety rating --
+
+WITH TempBikeData AS (
+SELECT street, SUM (safetyrating) / COUNT (street) AS 'avg_safetyrating'
+FROM CityBikeLanes
+GROUP BY street
+HAVING avg_safetyrating >= 4)
+
+SELECT street, avg_safetyrating,
+ CASE WHEN avg_safetyrating >= 4 THEN 'Safe Lane'
+ Else 'no'
+END AS 'Label'
+FROM TempBikeData
+ORDER BY avg_safetyrating ASC;
+
+-- or --
+
+WITH TempBikeData AS (
+SELECT street, SUM (safetyrating) / COUNT (street) AS 'avg_safetyrating'
+FROM CityBikeLanes
+GROUP BY street)
+
+SELECT street, avg_safetyrating,
+ CASE WHEN avg_safetyrating >= 4 THEN 'Safe Lane'
+ Else 'no'
+END AS 'Label'
+FROM TempBikeData
+WHERE avg_safetyrating >= 4
+ORDER BY avg_safetyrating ASC;
+
+-- Using a window function, provide the safety rating for each street review in one column and the average safety rating for each street in the adjacent column --
+
+SELECT street, safetyrating,
+AVG(safetyrating) OVER (PARTITION BY street) as "Average_safety_rating"
+FROM CityBikeLanes;
+
+-- Using a window function, provide a list of all the bike lanes, both safety ratings for each lane, the average safety rating for each lane, and a recommendation label for each basd on their average safety rating. --
+
+WITH TempBikeLanes AS (
+SELECT street, safetyrating,
+AVG (safetyrating) OVER (PARTITION BY street) AS 'Avg_safetyrating'
+FROM CityBikeLanes
+)
+
+SELECT *,
+ CASE WHEN Avg_safetyrating >= 4 THEN 'Leave_As_Is'
+ WHEN Avg_safetyrating < 2.5 THEN 'Remove'
+ Else 'Improvements_Needed'
+END AS 'Recommendation'
+FROM TempBikeLanes
+ORDER BY label;
+
+-- or --
+
+SELECT street, safetyrating,
+AVG(safetyrating) OVER (PARTITION BY street) as "Average_safety_rating",
+CASE WHEN AVG(safetyrating) OVER (PARTITION BY street) >=4 THEN "Leave As-Is"
+    WHEN AVG(safetyrating) OVER (PARTITION BY street) <2.5 THEN "Remove"
+    ELSE "Improvements Needed"
+    END AS "Recommendation"
+FROM CityBikeLanes
+ORDER BY recommendation;
